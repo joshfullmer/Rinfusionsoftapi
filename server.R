@@ -60,7 +60,8 @@ shinyServer(function(input, output, session) {
     #reads uploaded attachment csv
     attachments <- read.csv(input$fileAttachmentsFile$datapath,header=T)
     
-    attachments["errorReason"] <- ""
+    #add error reason column for exporting
+    attachments["errorReason"] <- 
     
     #create empty data frame to store skipped attachments
     skippedattachments <- data.frame()
@@ -68,10 +69,8 @@ shinyServer(function(input, output, session) {
     #foreach row in attachments file
     for(x in 1:nrow(attachments)) {
       
-            #valid file checker (confirms if entire row has data, and that file exists)
+      #valid file checker (confirms if entire row has data, and that file exists)
       containsNA <- anyNA(attachments[x,])
-      print("Contains NA")
-      print(containsNA)
       if (containsNA == T) {
         attachments[x,]$errorReason <- "Insufficient Data"
         skippedattachments <- rbind.fill(skippedattachments,attachments[x,])
@@ -79,8 +78,6 @@ shinyServer(function(input, output, session) {
       }
       
       validFile <- file.exists(paste(parseDirPath(c(home = '~'),dir()),attachments[x,]$filepath,sep="/"))
-      print("Valid File?")
-      print(validFile)
       if (validFile == F) {
         attachments[x,]$errorReason <- "File not found"
         skippedattachments <- rbind.fill(skippedattachments,attachments[x,])
@@ -89,8 +86,6 @@ shinyServer(function(input, output, session) {
       
       #check for the current rows file size
       filesizecheck <- file.info(paste(parseDirPath(c(home = '~'),dir()),attachments[x,]$filepath,sep="/"))$size < 10 * 1024 * 1024
-      print("Filesize?")
-      print(filesizecheck)
       if (filesizecheck == F) {
         attachments[x,]$errorReason <- "File size limit exceeded"
         skippedattachments <- rbind.fill(skippedattachments,attachments[x,])
@@ -99,8 +94,6 @@ shinyServer(function(input, output, session) {
       
       #check that the files extension is in the list of supported file types
       extensioncheck <- attachments[x,]$extension %in% supportedFileTypes
-      print("File extension?")
-      print(extensioncheck)
       if (extensioncheck == F) {
         attachments[x,]$errorReason <- "Unsupported file type"
         skippedattachments <- rbind.fill(skippedattachments,attachments[x,])
