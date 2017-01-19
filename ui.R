@@ -33,10 +33,10 @@ shinyUI(navbarPage(theme = "bootstrap.css","Infusionsoft API Tools",
                    tabPanel("File Attachments",
                             sidebarLayout(
                               sidebarPanel(
-                                textInput("appname","App Name:"),
-                                textInput("apikey","API Key:"),
-                                #submitButton("Get Table"),
-                                p("This function will remove all blank columns contained in a CSV file.")
+                                textInput("appnameAttachment","App Name:"),
+                                textInput("apikeyAttachment","API Key:"),
+                                tags$hr(),
+                                actionButton("upload","Begin Upload")
                               ),
                               mainPanel(
                                 fileInput('fileAttachmentsFile', 'Choose Attachments CSV to upload',
@@ -51,7 +51,9 @@ shinyUI(navbarPage(theme = "bootstrap.css","Infusionsoft API Tools",
                                 h4("output$dir"),
                                 verbatimTextOutput("dir"), br(),
                                 h4("Files in that dir"),
-                                verbatimTextOutput("files")
+                                verbatimTextOutput("files"),
+                                h4("Status:"),
+                                verbatimTextOutput("status")
                               ))
                    )
 )
